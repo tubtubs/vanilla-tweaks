@@ -100,7 +100,16 @@ struct Args {
 
     /// If set, do not patch the fix for the camera sometimes skipping to a random direction when rotated.
     #[clap(long, default_value_t = false, value_parser)]
-    no_cameraskipfix: bool
+    no_cameraskipfix: bool,
+
+    /// If set, do not patch the fix for ressing cross faction released corpses
+    #[clap(long, default_value_t = false, value_parser)]
+    no_crossfactionresfix: bool,
+
+    /// If set, applies the custom glues patch for custom frames and XML
+    #[clap(long, default_value_t = false, value_parser)]
+    customgluespatch: bool
+
 }
 
 /**
@@ -270,6 +279,38 @@ fn main() -> ExitCode {
             file[*address..*address+bytes.len()].copy_from_slice(&bytes);
         }
         println!(" Success!");
+    }
+
+    if !args.no_crossfactionresfix {               
+        const CROSSFACTION_RES_FIX_OFFSET: usize = 0x2067DE;
+        const CROSSFACTION_RES_FIX_BYTES: [u8; 1] = [0x00];
+        print!("Applying patch: cross faction released res fix...");
+        file[CROSSFACTION_RES_FIX_OFFSET..CROSSFACTION_RES_FIX_OFFSET+CROSSFACTION_RES_FIX_BYTES.len()].copy_from_slice(&CROSSFACTION_RES_FIX_BYTES);
+        println!(" Success!");        
+    }
+
+    if args.customgluespatch {
+        const CUSTOMGLUESPATCH_OFFSET1: usize = 0x2f113a;
+        const CUSTOMGLUESPATCH_OFFSET2: usize = 0x2f113b;
+        const CUSTOMGLUESPATCH_OFFSET3: usize = 0x2f1158;
+        const CUSTOMGLUESPATCH_OFFSET4: usize = 0x2f11a7;
+        const CUSTOMGLUESPATCH_OFFSET5: usize = 0x2f11f0;
+        const CUSTOMGLUESPATCH_OFFSET6: usize = 0x2f11f1;
+
+        const CUSTOMGLUESPATCH_BYTES1: [u8; 1] = [0xeb];
+        const CUSTOMGLUESPATCH_BYTES2: [u8; 1] = [0x19];
+        const CUSTOMGLUESPATCH_BYTES3: [u8; 1] = [0x03];
+        const CUSTOMGLUESPATCH_BYTES4: [u8; 1] = [0x03];
+        const CUSTOMGLUESPATCH_BYTES5: [u8; 1] = [0xeb];
+        const CUSTOMGLUESPATCH_BYTES6: [u8; 1] = [0xb2];
+        print!("Applying patch: custom glues patch...");
+        file[CUSTOMGLUESPATCH_OFFSET1..CUSTOMGLUESPATCH_OFFSET1+CUSTOMGLUESPATCH_BYTES1.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES1);
+        file[CUSTOMGLUESPATCH_OFFSET2..CUSTOMGLUESPATCH_OFFSET2+CUSTOMGLUESPATCH_BYTES2.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES2);
+        file[CUSTOMGLUESPATCH_OFFSET3..CUSTOMGLUESPATCH_OFFSET3+CUSTOMGLUESPATCH_BYTES3.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES3);
+        file[CUSTOMGLUESPATCH_OFFSET4..CUSTOMGLUESPATCH_OFFSET4+CUSTOMGLUESPATCH_BYTES4.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES4);
+        file[CUSTOMGLUESPATCH_OFFSET5..CUSTOMGLUESPATCH_OFFSET5+CUSTOMGLUESPATCH_BYTES5.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES5);
+        file[CUSTOMGLUESPATCH_OFFSET6..CUSTOMGLUESPATCH_OFFSET6+CUSTOMGLUESPATCH_BYTES6.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES6);
+        println!(" Success!");        
     }
 
     //Write out patched file

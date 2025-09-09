@@ -31,6 +31,11 @@ These are some custom patches for the old 1.12.1 World of Warcraft client, which
   - If you experience inexplicable crashes, try disabling this patch, and if you manage to reproduce them let me know via an issue. The client *should* have no issues being Large Address Aware, but you never know.
 - **Camera skip glitch fix**
   - Fixes the glitch where the camera sometimes skips to face a random direction when rotated.
+- **Crossfaction Res Fix**
+  - Fixes an issue when ressurecting crossfaction players that have released. NOTE: Will always let you ressurect crossfaction players that have released, even if they're not in your party. Will still ressurect released crossfaction players even if the server doesn't have crossfaction interaction enabled.
+
+-- **Custom Glues Patch**
+  - Applies a patch that allows custom frames and XML
 
 ## Usage
 
