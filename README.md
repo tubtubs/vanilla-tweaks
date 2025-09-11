@@ -34,8 +34,8 @@ These are some custom patches for the old 1.12.1 World of Warcraft client, which
 - **Crossfaction Res Fix**
   - Fixes an issue when ressurecting crossfaction players that have released. NOTE: Will always let you ressurect crossfaction players that have released, even if they're not in your party. Will still ressurect released crossfaction players even if the server doesn't have crossfaction interaction enabled.
 
--- **Custom Glues Patch**
-  - Applies a patch that allows custom frames and XML
+- **Custom Glues Patch**
+  - Applies a patch that allows custom frames and XML. Its opt in though, must be enabled by running with --customgluespatch
 
 ## Usage
 
