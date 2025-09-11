@@ -27,8 +27,11 @@ The following patches are currently enabled by default:
 - Large address aware patch
 - Camera rotation skip glitch fix
 
+
 The following patches are disabled by default, and can be enabled with command line parameters:
-- Maximum camera distance limit increase")]
+- Maximum camera distance limit increase
+- Custom glues patch
+- Cross faction corpse res fix")]
 struct Args {
     /// Path to WoW.exe.
     #[clap(value_parser)]
@@ -104,7 +107,7 @@ struct Args {
 
     /// If set, do not patch the fix for ressing cross faction released corpses
     #[clap(long, default_value_t = false, value_parser)]
-    no_crossfactionresfix: bool,
+    crossfactionresfix: bool,
 
     /// If set, applies the custom glues patch for custom frames and XML
     #[clap(long, default_value_t = false, value_parser)]
@@ -281,7 +284,7 @@ fn main() -> ExitCode {
         println!(" Success!");
     }
 
-    if !args.no_crossfactionresfix {               
+    if args.crossfactionresfix {               
         const CROSSFACTION_RES_FIX_OFFSET: usize = 0x2067DE;
         const CROSSFACTION_RES_FIX_BYTES: [u8; 1] = [0x00];
         print!("Applying patch: cross faction released res fix...");
