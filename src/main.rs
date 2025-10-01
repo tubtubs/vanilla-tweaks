@@ -31,7 +31,8 @@ The following patches are currently enabled by default:
 The following patches are disabled by default, and can be enabled with command line parameters:
 - Maximum camera distance limit increase
 - Custom glues patch
-- Cross faction corpse res fix")]
+- Cross faction corpse res fix
+- Bluemoon patch (visible at 1am, every other day or so)")]
 struct Args {
     /// Path to WoW.exe.
     #[clap(value_parser)]
@@ -111,7 +112,11 @@ struct Args {
 
     /// If set, applies the custom glues patch for custom frames and XML
     #[clap(long, default_value_t = false, value_parser)]
-    customgluespatch: bool
+    customgluespatch: bool,
+
+    /// If set, applies a patch to show the blue moon. Appears every other day, or so at 1am
+    #[clap(long, default_value_t = false, value_parser)]
+    bluemoonpatch: bool
 
 }
 
@@ -284,6 +289,7 @@ fn main() -> ExitCode {
         println!(" Success!");
     }
 
+    //crossfaction res fix
     if args.crossfactionresfix {               
         const CROSSFACTION_RES_FIX_OFFSET: usize = 0x2067DE;
         const CROSSFACTION_RES_FIX_BYTES: [u8; 1] = [0x00];
@@ -292,7 +298,9 @@ fn main() -> ExitCode {
         println!(" Success!");        
     }
 
+    //custom glues patch
     if args.customgluespatch {
+        //Thanks to stoneharry
         const CUSTOMGLUESPATCH_OFFSET1: usize = 0x2f113a;
         const CUSTOMGLUESPATCH_OFFSET2: usize = 0x2f113b;
         const CUSTOMGLUESPATCH_OFFSET3: usize = 0x2f1158;
@@ -313,6 +321,15 @@ fn main() -> ExitCode {
         file[CUSTOMGLUESPATCH_OFFSET4..CUSTOMGLUESPATCH_OFFSET4+CUSTOMGLUESPATCH_BYTES4.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES4);
         file[CUSTOMGLUESPATCH_OFFSET5..CUSTOMGLUESPATCH_OFFSET5+CUSTOMGLUESPATCH_BYTES5.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES5);
         file[CUSTOMGLUESPATCH_OFFSET6..CUSTOMGLUESPATCH_OFFSET6+CUSTOMGLUESPATCH_BYTES6.len()].copy_from_slice(&CUSTOMGLUESPATCH_BYTES6);
+        println!(" Success!");        
+    }
+
+    //blue moon patch
+    if args.bluemoonpatch {
+        const BLUEMOONPATCH_OFFSET: usize = 0x3E5B83;        
+        const BLUEMOONPATCH_BYTES: [u8; 13] = [0xC7, 0x05, 0xA4, 0x98, 0xCE, 0x00, 0xD4, 0xE2, 0xE7, 0xFF, 0xC2, 0x04, 0x00];
+        print!("Applying patch: blue moon patch...");
+        file[BLUEMOONPATCH_OFFSET..BLUEMOONPATCH_OFFSET+BLUEMOONPATCH_BYTES.len()].copy_from_slice(&BLUEMOONPATCH_BYTES);
         println!(" Success!");        
     }
 

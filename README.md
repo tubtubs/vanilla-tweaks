@@ -33,10 +33,10 @@ These are some custom patches for the old 1.12.1 World of Warcraft client, which
   - Fixes the glitch where the camera sometimes skips to face a random direction when rotated.
 - **Crossfaction Res Fix**
   - Fixes an issue when ressurecting crossfaction players that have released. NOTE: Will always let you ressurect crossfaction players that have released, even if they're not in your party. Will still ressurect released crossfaction players even if the server doesn't have crossfaction interaction enabled.
-
 - **Custom Glues Patch**
   - Applies a patch that allows custom frames and XML. Its opt in though, must be enabled by running with --customgluespatch
-
+- **Bluemoon Patch**
+  - Fixes the bluemoon, a second moon that that only appears at 1am every other night or so
 ## Usage
 
 Download the release matching your operating system from the [releases page](https://github.com/brndd/vanilla-tweaks/releases). Extract the executable from the archive into your WoW directory.
