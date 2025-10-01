@@ -17,22 +17,22 @@ use clap::Parser;
 #[clap(long_about = "Applies patches to enhance the functionality of the 1.12.1 World of Warcraft client.
 
 The following patches are currently enabled by default:
-- Widescreen FoV fix
-- Sound in background patch
-- Sound channel count increase
 - Farclip (terrain render distance) maximum value change
 - Frilldistance (grass render distance) change
-- Quickloot by default patch (hold shift for manual loot)
 - Nameplate range change
 - Large address aware patch
 - Camera rotation skip glitch fix
-
+- Bluemoon patch (visible at 1am, every other day or so)
+- Custom glues patch
 
 The following patches are disabled by default, and can be enabled with command line parameters:
 - Maximum camera distance limit increase
-- Custom glues patch
 - Cross faction corpse res fix
-- Bluemoon patch (visible at 1am, every other day or so)")]
+- Quickloot by default patch (hold shift for manual loot)
+- Widescreen FoV fix
+- Sound in background patch
+- Sound channel count increase
+")]
 struct Args {
     /// Path to WoW.exe.
     #[clap(value_parser)]
@@ -69,9 +69,9 @@ struct Args {
     #[clap(long, value_parser)]
     maxcameradistance: Option<f32>,
 
-    /// If set, do not patch FoV.
+    /// If set, patch FoV.
     #[clap(long, default_value_t = false, value_parser)]
-    no_fov: bool,
+    fov_patch: bool,
 
     /// If set, do not patch farclip.
     #[clap(long, default_value_t = false, value_parser)]
@@ -81,13 +81,13 @@ struct Args {
     #[clap(long, default_value_t = false, value_parser)]
     no_frilldistance: bool,
 
-    /// If set, do not patch sound in background.
+    /// If set, patch sound in background.
     #[clap(long, default_value_t = false, value_parser)]
-    no_sound_in_background: bool,
+    sound_in_background: bool,
 
-    /// If set, do not patch quickloot.
+    /// If set, patch quickloot.
     #[clap(long, default_value_t = false, value_parser)]
-    no_quickloot: bool,
+    quickloot: bool,
 
     /// If set, do not patch nameplate distance.
     #[clap(long, default_value_t = false, value_parser)]
@@ -95,7 +95,7 @@ struct Args {
 
     /// If set, do not patch the number of sound channels.
     #[clap(long, default_value_t = false, value_parser)]
-    no_soundchannels: bool,
+    soundchannels_patch: bool,
 
     /// If set, do not patch the executable to be Large Address Aware.
     /// You may want to enable this if playing on incredibly low-end hardware with less than 3 GiB RAM.
@@ -106,17 +106,17 @@ struct Args {
     #[clap(long, default_value_t = false, value_parser)]
     no_cameraskipfix: bool,
 
-    /// If set, do not patch the fix for ressing cross faction released corpses
+    /// If set, patch the fix for ressing cross faction released corpses
     #[clap(long, default_value_t = false, value_parser)]
     crossfactionresfix: bool,
 
-    /// If set, applies the custom glues patch for custom frames and XML
+    /// If set, do not apply the custom glues patch for custom frames and XML
     #[clap(long, default_value_t = false, value_parser)]
-    customgluespatch: bool,
+    no_customgluespatch: bool,
 
-    /// If set, applies a patch to show the blue moon. Appears every other day, or so at 1am
+    /// If set, do not patch to show the blue moon. Appears every other day, or so at 1am
     #[clap(long, default_value_t = false, value_parser)]
-    bluemoonpatch: bool
+    no_bluemoonpatch: bool
 
 }
 
@@ -190,7 +190,7 @@ fn main() -> ExitCode {
     }
 
     // Widescreen FoV patch
-    if !args.no_fov {
+    if args.fov_patch {
         const FOV_OFFSET: usize = 0x4089B4;
         let fov_bytes = args.fov.to_le_bytes();
         print!("Applying patch: widescreen FoV fix...");
@@ -208,7 +208,7 @@ fn main() -> ExitCode {
     }
 
     // Sound in background patch
-    if !args.no_sound_in_background {
+    if args.sound_in_background {
         const SOUND_IN_BACKGROUND_OFFSET: usize = 0x3A4869;
         const SOUND_IN_BACKGROUND_BYTES: [u8; 1] = [0x27];
         print!("Applying patch: sound in background...");
@@ -217,7 +217,7 @@ fn main() -> ExitCode {
     }
 
     // Sound channels patch
-    if !args.no_soundchannels {
+    if args.soundchannels_patch {
         const SOUNDCHANNEL_OFFSET: usize = 0x435d38;
         let soundchannel_string = args.soundchannels.to_string();
         print!("Applying patch: software sound channels default increase...");
@@ -235,7 +235,7 @@ fn main() -> ExitCode {
     }
 
     // Quickloot key reverse patch (hold shift to manual loot)
-    if !args.no_quickloot {
+    if args.quickloot {
         const QUICKLOOT_OFFSET: usize = 0x0C1ECF;
         const QUICKLOOT_BYTES: [u8; 1] = [0x75];
         const QUICKLOOT_OFFSET2: usize = 0x0C2B25;
@@ -299,7 +299,7 @@ fn main() -> ExitCode {
     }
 
     //custom glues patch
-    if args.customgluespatch {
+    if !args.no_customgluespatch {
         //Thanks to stoneharry
         const CUSTOMGLUESPATCH_OFFSET1: usize = 0x2f113a;
         const CUSTOMGLUESPATCH_OFFSET2: usize = 0x2f113b;
@@ -325,7 +325,7 @@ fn main() -> ExitCode {
     }
 
     //blue moon patch
-    if args.bluemoonpatch {
+    if !args.no_bluemoonpatch {
         const BLUEMOONPATCH_OFFSET: usize = 0x3E5B83;        
         const BLUEMOONPATCH_BYTES: [u8; 13] = [0xC7, 0x05, 0xA4, 0x98, 0xCE, 0x00, 0xD4, 0xE2, 0xE7, 0xFF, 0xC2, 0x04, 0x00];
         print!("Applying patch: blue moon patch...");
