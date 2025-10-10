@@ -3,7 +3,7 @@
 # vanilla-tweaks
 
 These are some custom patches for the old 1.12.1 World of Warcraft client, which lacks many of the conveniences of more modern clients.
-Some patches are now disabled by default, as they're features that may conflict or already be covered by SuperWoW.
+Some patches are now disabled by default, as they're features that may conflict or already be covered by [SuperWoW](https://github.com/balakethelock/SuperWoW).
 Check the --help option for more info.
 
 ## Current patches
